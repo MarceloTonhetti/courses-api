@@ -5,6 +5,9 @@ const cors = require('cors')
 const PORT = process.env.PORT || 3000
 const database = require('./src/config/database')
 
+
+const CourseRoutes = require('./src/app/routes/course.routes')
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.text())
 app.use(bodyParser.json({ type: 'application/json' }))
@@ -20,6 +23,8 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   res.send({ message: `API escutado na porta ${PORT}` })
 })
+
+app.use('/course', CourseRoutes)
 
 app.use('*', (req, res) => {
   res.send({ message: 'API não encontrada!' })
