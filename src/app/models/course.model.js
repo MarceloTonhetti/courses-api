@@ -9,7 +9,6 @@ const CourseSchema = new Schema({
   },
   descrition: {
     type: String,
-    required: false,
     trim: true
   },
   platform: {
@@ -23,8 +22,17 @@ const CourseSchema = new Schema({
   },
   modules: {
     type: String,
-    required: false,
     trim: true
+  },
+  photo: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  instructor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Instructor',
+    required: true
   }
 },
   {
@@ -32,4 +40,4 @@ const CourseSchema = new Schema({
     versionKey: false
   }
 )
-module.exports = model('courseschema', CourseSchema);
+module.exports = model('Course', CourseSchema);
