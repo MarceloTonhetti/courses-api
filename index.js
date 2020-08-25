@@ -7,6 +7,7 @@ const database = require('./src/config/database')
 
 
 const CourseRoutes = require('./src/app/routes/course.routes')
+const InstructorRoutes = require('./src/app/routes/instructor.routes')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.text())
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/course', CourseRoutes)
+app.use('/instructor', InstructorRoutes)
 
 app.use('*', (req, res) => {
   res.send({ message: 'API não encontrada!' })
