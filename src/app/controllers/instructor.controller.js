@@ -15,21 +15,11 @@ class Instructor {
   }
 
   viewAllInstructor(req, res) {
-
-    instructor.find({}, (err, data) => {
-      if (err) {
-        res.status(500).send({ message: 'Error processing your request', error: err })
-      } else {
-        res.status(200).send({ message: 'Instructors successfully recovered!', instructors: data })
-      }
-    })
-
-
-    /**instructor.find({}, { courses: 0 })
+    instructor.find({}, { courses: 0 })
       .sort({ name: 1 })
       .exec((err, data) => {
         if (err) {
-          res.status(500).send({ message: "Houve um erro ao processar sua requisição", error: err })
+          res.status(500).send({ message: "Error processing your request", error: err })
         } else {
           if (data.length <= 0) {
             res.status(200).send({ message: "Não foram escontrados instrutores para exibir" })
@@ -37,19 +27,7 @@ class Instructor {
             res.status(200).send({ message: "Instrutores recuperados com sucesso", data: data })
           }
         }
-      })*/
-  }
-
-  viewOneInstructor(req, res) {
-    const name = req.params.name
-
-    instructor.findOne({ name: name }, (err, data) => {
-      if (err) {
-        res.status(500).send({ message: 'Error processing your request', error: err })
-      } else {
-        res.status(200).send({ message: `Instructor ${name} was successfully recovered!`, instructor: data })
-      }
-    })
+      })
   }
 
   updateOneInstructor(req, res) {
@@ -85,31 +63,27 @@ class Instructor {
     })
   }
 
-  /**buscarOsCursosDoInstrutor(req, res) {
+  viewOneInstructorWithCourses(req, res) {
     const { nameInstructor } = req.params
 
     if (nameInstructor == undefined || nameInstructor == 'null') {
-      res.status(400).send({ message: "O nome do instrutor deve ser obrigatoriamente preenchido" })
+      res.status(400).send({ message: "The name of the instructor must be filled in" })
     }
 
-    instructor.findOne({ name: nameInstructor })
+    instructor.find({ name: nameInstructor })
       .populate('courses', { name: 1, photo: 1 })
       .exec((err, data) => {
         if (err) {
-          res.status(500).send({ message: "Houve um erro ao processar sua requisição", error: err })
+          res.status(500).send({ message: "Error processing your request", error: err })
         } else {
           if (data.length <= 0) {
-            res.status(200).send({ message: `O instructor ${nameInstructor} não existe no banco de dados` })
-          } else if (data['couses'].length <= 0 || data == null) {
-            res.status(200).send({ message: `O instructor ${nameInstructor} não possuie cursos cadastrados` })
+            res.status(200).send({ message: `Instructor ${nameInstructor} does not exist in the database` })
           } else {
-            res.status(200).send({ message: `O instructor ${nameInstructor} foi recuperado com sucesso`, data: data })
+            res.status(200).send({ message: `Instructor ${nameInstructor} successfully recovered`, data: data })
           }
         }
       })
-  }*/
-
-
+  }
 
 }
 

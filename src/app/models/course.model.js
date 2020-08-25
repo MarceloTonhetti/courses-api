@@ -4,8 +4,7 @@ const CourseSchema = new Schema({
   name: {
     type: String,
     required: true,
-    trim: true,
-    unique: true
+    trim: true
   },
   descrition: {
     type: String,

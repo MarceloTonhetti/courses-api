@@ -1,8 +1,9 @@
 const course = require('./../models/course.model')
+const instructor = require('./../models/instructor.model')
 
 class Course {
 
-  createCourse(req, res) {
+  criarFilme(req, res) {
     const reqBody = req.body
 
     course.create(reqBody, (err, data) => {
@@ -10,6 +11,31 @@ class Course {
         res.status(500).send({ message: 'Error processing your request', error: err })
       } else {
         res.status(201).send({ message: 'Successfully created course!', course: data })
+      }
+    })
+  }
+  createCourse(req, res) {
+    const reqBody = req.body
+    const idInstructor = reqBody['instructor']
+
+    course.create(reqBody, (err, course) => {
+      if (err) {
+        res.status(500).send({ message: "Houve um erro ao processar a sua requisição1", error: err })
+      } else {
+        instructor.findById(idInstructor, (err, instructor) => {
+          if (err) {
+            res.status(500).send({ message: "Houve um erro ao processar a sua requisição2", error: err })
+          } else {
+            instructor.courses.push(course)
+            instructor.save({}, (err) => {
+              if (err) {
+                res.status(500).send({ message: "Houve um erro ao processar a sua requisição3", error: err })
+              } else {
+                res.status(201).send({ message: "Filme criado com sucesso", data: course })
+              }
+            })
+          }
+        })
       }
     })
   }
@@ -31,7 +57,7 @@ class Course {
       if (err) {
         res.status(500).send({ message: 'Error processing your request', error: err })
       } else {
-        res.status(200).send({ message: `Course ${name} was successfully recovered`, courses: data })
+        res.status(200).send({ message: `Course ${name} was successfully recovered`, course: data })
       }
     })
   }

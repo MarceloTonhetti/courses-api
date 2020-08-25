@@ -9,13 +9,13 @@ const InstructorSchema = new Schema({
   photo: {
     type: String,
     trim: true
-  }/**,
+  },
   courses: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Course'
     }
-  ]*/
+  ]
 
 },
   {
