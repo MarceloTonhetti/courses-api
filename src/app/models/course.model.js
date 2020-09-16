@@ -6,7 +6,7 @@ const CourseSchema = new Schema({
     required: true,
     trim: true
   },
-  descrition: {
+  description: {
     type: String,
     trim: true
   },
@@ -15,7 +15,7 @@ const CourseSchema = new Schema({
     required: true,
     trim: true
   },
-  amountClasses: {
+  numberClasses: {
     type: Number,
     required: true
   },
@@ -23,7 +23,7 @@ const CourseSchema = new Schema({
     type: String,
     trim: true
   },
-  photo: {
+  image: {
     type: String,
     required: true,
     trim: true

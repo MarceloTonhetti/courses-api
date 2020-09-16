@@ -22,9 +22,9 @@ class Instructor {
           res.status(500).send({ message: "Error processing your request", error: err })
         } else {
           if (data.length <= 0) {
-            res.status(200).send({ message: "Não foram escontrados instrutores para exibir" })
+            res.status(200).send({ message: "No instructors were found in the database" })
           } else {
-            res.status(200).send({ message: "Instrutores recuperados com sucesso", data: data })
+            res.status(200).send({ message: "Successfully recovered all instructors!", data: data })
           }
         }
       })

@@ -6,7 +6,7 @@ const InstructorSchema = new Schema({
     required: true,
     trim: true
   },
-  photo: {
+  image: {
     type: String,
     trim: true
   },

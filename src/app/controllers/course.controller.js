@@ -3,35 +3,24 @@ const instructor = require('./../models/instructor.model')
 
 class Course {
 
-  criarFilme(req, res) {
-    const reqBody = req.body
-
-    course.create(reqBody, (err, data) => {
-      if (err) {
-        res.status(500).send({ message: 'Error processing your request', error: err })
-      } else {
-        res.status(201).send({ message: 'Successfully created course!', course: data })
-      }
-    })
-  }
   createCourse(req, res) {
     const reqBody = req.body
     const idInstructor = reqBody['instructor']
 
     course.create(reqBody, (err, course) => {
       if (err) {
-        res.status(500).send({ message: "Houve um erro ao processar a sua requisição1", error: err })
+        res.status(500).send({ message: "Error processing your request", error: err })
       } else {
         instructor.findById(idInstructor, (err, instructor) => {
           if (err) {
-            res.status(500).send({ message: "Houve um erro ao processar a sua requisição2", error: err })
+            res.status(500).send({ message: "Error processing your request", error: err })
           } else {
             instructor.courses.push(course)
             instructor.save({}, (err) => {
               if (err) {
-                res.status(500).send({ message: "Houve um erro ao processar a sua requisição3", error: err })
+                res.status(500).send({ message: "Error processing your request", error: err })
               } else {
-                res.status(201).send({ message: "Filme criado com sucesso", data: course })
+                res.status(201).send({ message: "Successfully created course!", data: course })
               }
             })
           }
@@ -41,25 +30,41 @@ class Course {
   }
 
   viewAllCourses(req, res) {
-    course.find({}, (err, data) => {
-      if (err) {
-        res.status(500).send({ message: 'Error processing your request', error: err })
-      } else {
-        res.status(200).send({ message: 'Courses successfully recovered', courses: data })
-      }
-    })
+    course.find({})
+      .populate('instructor', { name: 1, image: 1 })
+      .exec((err, data) => {
+        if (err) {
+          res.status(500).send({ message: 'Error processing your request', error: err })
+        } else {
+          if (data.length <= 0) {
+            res.status(200).send({ message: 'There are no courses registered in the database' })
+          } else {
+            res.status(200).send({ message: 'Courses successfully recovered', courses: data })
+          }
+        }
+      })
   }
 
   viewOneCourse(req, res) {
-    const name = req.params.name
+    const { nameCourse } = req.params
 
-    course.find({ name: name }, (err, data) => {
-      if (err) {
-        res.status(500).send({ message: 'Error processing your request', error: err })
-      } else {
-        res.status(200).send({ message: `Course ${name} was successfully recovered`, course: data })
-      }
-    })
+    if (nameCourse == undefined || nameCourse == 'null') {
+      res.status(400).send({ message: "The name of the course must be filled in" })
+    }
+
+    course.findOne({ name: nameCourse })
+      .populate('instructor', { name: 1, image: 1 })
+      .exec((err, data) => {
+        if (err) {
+          res.status(500).send({ message: "Error processing your request", error: err })
+        } else {
+          if (data == null) {
+            res.status(200).send({ message: `Course not found in the database` })
+          } else {
+            res.status(200).send({ message: `Course ${nameCourse} was successfully recovered`, data: data })
+          }
+        }
+      })
   }
 
   updateOneCourse(req, res) {
