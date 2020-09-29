@@ -71,7 +71,7 @@ class Instructor {
     }
 
     instructor.find({ name: nameInstructor })
-      .populate('courses', { name: 1, photo: 1 })
+      .populate('courses', { name: 1, image: 1 })
       .exec((err, data) => {
         if (err) {
           res.status(500).send({ message: "Error processing your request", error: err })
