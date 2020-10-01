@@ -101,7 +101,7 @@ class Course {
   }
 
   validateCourseName(req, res) {
-    const name = res.query.name.replace(/%20/g, " ")
+    const name = req.query.name.replace(/%20/g, " ")
 
     course.find({ name: { '$regex': `^${name}$`, '$options': 'i' } }, (err, result) => {
       if (err) {
