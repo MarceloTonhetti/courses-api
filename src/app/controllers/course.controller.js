@@ -100,5 +100,21 @@ class Course {
     })
   }
 
+  validateCourseName(req, res) {
+    const name = res.query.name.replace(/%20/g, " ")
+
+    course.find({ name: { '$regex': `^${name}$`, '$options': 'i' } }, (err, result) => {
+      if (err) {
+        res.status(500).send({ message: 'Error processing your request', error: err })
+      } else {
+        if (result.length > 0) {
+          res.status(200).send({ message: 'There is already a registered course with that name', data: result.length })
+        } else {
+          res.status(200).send({ message: 'Course available', data: result.length })
+        }
+      }
+    })
+  }
+
 }
 module.exports = new Course()
