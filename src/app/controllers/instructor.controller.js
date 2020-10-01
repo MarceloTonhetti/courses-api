@@ -9,7 +9,7 @@ class Instructor {
       if (err) {
         res.status(500).send({ message: 'Error processing your request', error: err })
       } else {
-        res.status(201).send({ message: 'Successfully created instructor!', instructor: data })
+        res.status(201).send({ message: 'Successfully created instructor!', data: data })
       }
     })
   }

@@ -52,8 +52,8 @@ class Course {
       res.status(400).send({ message: "The name of the course must be filled in" })
     }
 
-    course.find({ name: nameCourse })
-      .populate('instructors', { name: 1, image: 1 })
+    course.findOne({ name: nameCourse })
+      .populate('instructor', { name: 1, image: 1 })
       .exec((err, data) => {
         if (err) {
           res.status(500).send({ message: "Error processing your request", error: err })
