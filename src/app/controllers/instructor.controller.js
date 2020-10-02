@@ -9,7 +9,7 @@ class Instructor {
       if (err) {
         res.status(500).send({ message: 'Error processing your request', error: err })
       } else {
-        res.status(201).send({ message: 'Successfully created instructor!', instructor: data })
+        res.status(201).send({ message: 'Successfully created instructor!', data: data })
       }
     })
   }
@@ -22,9 +22,9 @@ class Instructor {
           res.status(500).send({ message: "Error processing your request", error: err })
         } else {
           if (data.length <= 0) {
-            res.status(200).send({ message: "Não foram escontrados instrutores para exibir" })
+            res.status(200).send({ message: "No instructors were found in the database" })
           } else {
-            res.status(200).send({ message: "Instrutores recuperados com sucesso", data: data })
+            res.status(200).send({ message: "Successfully recovered all instructors!", data: data })
           }
         }
       })
@@ -71,7 +71,7 @@ class Instructor {
     }
 
     instructor.find({ name: nameInstructor })
-      .populate('courses', { name: 1, photo: 1 })
+      .populate('courses', { name: 1, image: 1 })
       .exec((err, data) => {
         if (err) {
           res.status(500).send({ message: "Error processing your request", error: err })
@@ -83,6 +83,22 @@ class Instructor {
           }
         }
       })
+  }
+
+  validateInstructorName(req, res) {
+    const name = req.query.name.replace(/%20/g, " ")
+
+    instructor.find({ name: { '$regex': `^${name}$`, '$options': 'i' } }, (err, result) => {
+      if (err) {
+        res.status(500).send({ message: 'Error processing your request', error: err })
+      } else {
+        if (result.length > 0) {
+          res.status(200).send({ message: 'There is already a registered instructor with that name', data: result.length })
+        } else {
+          res.status(200).send({ message: 'Instructor available', data: result.length })
+        }
+      }
+    })
   }
 
 }
