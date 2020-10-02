@@ -70,7 +70,7 @@ class Instructor {
       res.status(400).send({ message: "The name of the instructor must be filled in" })
     }
 
-    instructor.find({ name: nameInstructor })
+    instructor.findOne({ name: nameInstructor })
       .populate('courses', { name: 1, image: 1 })
       .exec((err, data) => {
         if (err) {
