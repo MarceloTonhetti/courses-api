@@ -6,7 +6,7 @@ route.post('/create', Course.createCourse)
 route.get('/viewAll', Course.viewAllCourses)
 route.get('/viewOne/:nameCourse', Course.viewOneCourse)
 route.get('/validadeCourseName', Course.validateCourseName)
-route.put('/updateOne/:name', Course.updateOneCourse)
+route.put('/update/:courseId', Course.updateCourse)
 route.delete('/deleteOne/:name', Course.deleteOneCourse)
 
 module.exports = route
