@@ -111,14 +111,27 @@ class Course {
     })
   }
 
-  deleteOneCourse(req, res) {
-    const nameDelete = req.params.name
+  deleteCourse(req, res) {
+    const { courseId } = req.params
 
-    course.deleteOne({ name: nameDelete }, (err) => {
-      if (err) {
-        res.status(500).send({ message: `Error processing your deletion`, error: err })
+    instructor.findOne({ courses: courseId }, (err, instructor) => {
+      if(err){
+        res.status(500).send({ message: 'Error processing your request' })
       } else {
-        res.status(200).send({ message: `Course ${nameDelete} successfully deleted` })
+        instructor.courses.pull(courseId)
+        instructor.save((err) => {
+          if(err){
+            res.status(500).send({ message: 'Error processing your request' })
+          } else {
+            course.deleteOne({ _id: courseId }, (err, result) => {
+              if (err) {
+                res.status(500).send({ message: 'Error processing your request' })
+              } else {
+                res.status(200).send({ message: `Course successfully deleted`, data: result })
+              }
+            })
+          }
+        })
       }
     })
   }

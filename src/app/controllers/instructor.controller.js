@@ -1,4 +1,5 @@
 const instructor = require('./../models/instructor.model')
+const course = require('./../models/course.model')
 
 class Instructor {
 
@@ -43,14 +44,20 @@ class Instructor {
     })
   }
 
-  deleteOneInstructor(req, res) {
-    const nameDelete = req.params.name
+  deleteInstructor(req, res) {
+    const { instructorId } = req.params
 
-    instructor.deleteOne({ name: nameDelete }, (err) => {
+    course.deleteOne({ instructor: instructorId }, (err) => {
       if (err) {
-        res.status(500).send({ message: 'Error processing your deletion', error: err })
+        res.status(500).send({ message: 'Error processing your request' })
       } else {
-        res.status(200).send({ message: `Instructor ${nameDelete} successfully deleted` })
+        instructor.deleteOne({ _id: instructorId }, (err, result) => {
+          if (err) {
+            res.status(500).send({ message: 'Error processing your deletion', error: err })
+          } else {
+            res.status(200).send({ message: `Instructor successfully deleted`, data: result})
+          }
+        })
       }
     })
   }

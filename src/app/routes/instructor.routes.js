@@ -7,6 +7,6 @@ route.get('/viewAll', Instructor.viewAllInstructor)
 route.get('/viewOne/:nameInstructor', Instructor.viewOneInstructorWithCourses)
 route.get('/validadeInstructorName', Instructor.validateInstructorName)
 route.put('/update/:instructorId', Instructor.updateInstructor)
-route.delete('/deleteOne/:name', Instructor.deleteOneInstructor)
+route.delete('/delete/:instructorId', Instructor.deleteInstructor)
 
 module.exports = route
