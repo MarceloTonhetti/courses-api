@@ -67,35 +67,71 @@ class Course {
       })
   }
 
-  updateOneCourse(req, res) {
-    const oldName = req.params.name
-    const newName = req.body.name
+  updateCourse(req, res) {
+    const { courseId } = req.params
+    const reqBody = req.body
+    const instructorId = reqBody['instructor']
 
-    course.updateOne({ name: oldName }, { $set: req.body }, (err, data) => {
+    course.updateOne({ _id: courseId }, { $set: reqBody }, (err, course) => {
       if (err) {
-        res.status(500).send({ message: 'Error processing your update', error: err })
+        res.status(500).send({ message: 'Error processing your request'})
       } else {
-        if (data.n > 0) {
-          course.findOne({ name: newName }, (error, result) => {
-            if (error) {
-              res.status(500).send({ message: 'Error processing your search in course updated', error: error })
+        instructor.findOne({ courses: courseId}, (err, result) => {
+          if (err) {
+            res.status(500).send({ message: 'Error processing your request'})
+          } else {
+            if(result['_id'] == instructorId) {
+              res.status(200).send({ message: `Course was successfully updated`, data: course})
             } else {
-              res.status(200).send({ message: `Course ${oldName} was successfully updated to ${newName}`, course: result })
+              result.courses.pull(courseId)
+              result.save({}, (err) => {
+                if(err){
+                  res.status(500).send({ message: 'Error processing your request'})
+                } else {
+                  instructor.findById(instructorId, (err, instructor) => {
+                    if(err){
+                      res.status(500).send({ message: 'Error processing your request' })
+                    } else {
+                      instructor.courses.push(courseId)
+                      instructor.save({}, (err) => {
+                        if(err) {
+                          res.status(500).send({ message: 'Error processing your request' })
+                        } else {
+                          res.status(200).send({ message: `Course was successfully updated`, data: course })
+                        }
+                      })
+                    }
+                  })
+                }
+              })
             }
-          })
-        }
+          }
+        })
       }
     })
   }
 
-  deleteOneCourse(req, res) {
-    const nameDelete = req.params.name
+  deleteCourse(req, res) {
+    const { courseId } = req.params
 
-    course.deleteOne({ name: nameDelete }, (err) => {
-      if (err) {
-        res.status(500).send({ message: `Error processing your deletion`, error: err })
+    instructor.findOne({ courses: courseId }, (err, instructor) => {
+      if(err){
+        res.status(500).send({ message: 'Error processing your request' })
       } else {
-        res.status(200).send({ message: `Course ${nameDelete} successfully deleted` })
+        instructor.courses.pull(courseId)
+        instructor.save((err) => {
+          if(err){
+            res.status(500).send({ message: 'Error processing your request' })
+          } else {
+            course.deleteOne({ _id: courseId }, (err, result) => {
+              if (err) {
+                res.status(500).send({ message: 'Error processing your request' })
+              } else {
+                res.status(200).send({ message: `Course successfully deleted`, data: result })
+              }
+            })
+          }
+        })
       }
     })
   }

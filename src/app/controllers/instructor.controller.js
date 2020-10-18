@@ -1,4 +1,5 @@
 const instructor = require('./../models/instructor.model')
+const course = require('./../models/course.model')
 
 class Instructor {
 
@@ -30,35 +31,33 @@ class Instructor {
       })
   }
 
-  updateOneInstructor(req, res) {
-    const oldName = req.params.name
-    const newName = req.body.name
+  updateInstructor(req, res) {
+    const { instructorId } = req.params
+    const reqBody = req.body
 
-    instructor.updateOne({ name: oldName }, { $set: req.body }, (err, data) => {
+    instructor.updateOne({ _id: instructorId }, { $set: reqBody }, (err, data) => {
       if (err) {
         res.status(500).send({ message: 'Error processing your updated', error: err })
       } else {
-        if (data.n > 0) {
-          instructor.findOne({ name: newName }, (error, result) => {
-            if (error) {
-              res.status(500).send({ message: 'Error processing your search in instructor updated', error: error })
-            } else {
-              res.status(200).send({ message: `Instructor ${oldName} was successfully update to ${newName}`, instructor: result })
-            }
-          })
-        }
+        res.status(200).send({ message: `Instructor was successfully update`, data: data })
       }
     })
   }
 
-  deleteOneInstructor(req, res) {
-    const nameDelete = req.params.name
+  deleteInstructor(req, res) {
+    const { instructorId } = req.params
 
-    instructor.deleteOne({ name: nameDelete }, (err) => {
+    course.deleteOne({ instructor: instructorId }, (err) => {
       if (err) {
-        res.status(500).send({ message: 'Error processing your deletion', error: err })
+        res.status(500).send({ message: 'Error processing your request' })
       } else {
-        res.status(200).send({ message: `Instructor ${nameDelete} successfully deleted` })
+        instructor.deleteOne({ _id: instructorId }, (err, result) => {
+          if (err) {
+            res.status(500).send({ message: 'Error processing your deletion', error: err })
+          } else {
+            res.status(200).send({ message: `Instructor successfully deleted`, data: result})
+          }
+        })
       }
     })
   }
